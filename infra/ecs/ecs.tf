@@ -4,7 +4,7 @@ resource "aws_ecs_cluster" "pichub_cluster" {
 }
 
 resource "aws_cloudwatch_log_group" "pichub_service_logs" {
-  name = "/ecs/pichub-ecs-service"
+  name = "/ecs/pichub-service"
 }
 
 # ecs task, defining how the container should run

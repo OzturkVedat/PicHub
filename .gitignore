@@ -367,3 +367,4 @@ FodyWeavers.xsd
 *.tfstate.backup
 .terraform/
 terraform.tfvars
+*.terraform.lock.hcl
