@@ -1,0 +1,40 @@
+name: Terraform Infra Deployment
+
+on:
+  workflow_run:
+    workflows: ["Build and Deploy API"]
+    types:
+      - completed
+
+  push:
+    branches:
+      - master
+    paths:
+      - "infra/**" # run when tf codes change
+      - "PicHub.API/**"
+      - "Dockerfile"
+
+jobs:
+  terraforms:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: infra # run cmds inside infra/
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: "1.6.0"
+
+      - name: Terraform Init
+        run: terraform init
+
+      - name: Terraform Plan
+        run: terraform plan
+
+      - name: Terraform Apply
+        run: terraform apply -auto-approve

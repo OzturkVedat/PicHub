@@ -1,0 +1,41 @@
+name: Build and Deploy API
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - "PicHub.API/**" # trigger when API code changes
+      - "Dockerfile" # trigger when Dockerfile changes
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Install AWS CLI
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y awscli
+
+      - name: Login to Amazon ECR
+        env:
+          AWS_REGION: ${{ secrets.AWS_REGION }}
+          AWS_ACCOUNT_ID: ${{secrets.AWS_ACCOUNT_ID}}
+        run: |
+          aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com
+
+      - name: Build Docker Image
+        run: |
+          docker build -t ${{ secrets.ECR_REPOSITORY }}:latest -f Dockerfile PicHub.API
+
+      - name: Tag and Push Docker Image
+        env:
+          AWS_REGION: ${{ secrets.AWS_REGION }}
+          AWS_ACCOUNT_ID: ${{secrets.AWS_ACCOUNT_ID}}
+        run: |
+          IMAGE_URI=$AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/${{ secrets.ECR_REPOSITORY }}:latest
+          docker tag ${{ secrets.ECR_REPOSITORY }}:latest $IMAGE_URI
+          docker push $IMAGE_URI
