@@ -1,4 +1,3 @@
-# NOT TESTED !!!
 name: Build and Deploy API
 
 on:
@@ -7,7 +6,6 @@ on:
       - master
     paths:
       - "PicHub.API/**" # trigger when API code changes
-      - "Dockerfile" # trigger when Dockerfile changes
 
 jobs:
   deploy:
