@@ -1,4 +1,4 @@
-name: Build and Push API Image
+name: Build and Deploy API
 
 on:
   workflow_dispatch:
@@ -55,3 +55,13 @@ jobs:
           file: ./PicHub.API/Dockerfile
           push: true
           tags: ${{secrets.AWS_ACCOUNT_ID}}.dkr.ecr.${{secrets.AWS_REGION}}.amazonaws.com/pichub/api:latest
+
+  deploy:
+    runs-on: ubuntu-latest
+    name: Deploy API via ECS
+    needs: build_and_push
+
+    steps:
+      - name: Force new ECS deployment
+        run: |
+          aws ecs update-service --cluster pichub-ecs-cluster --service pichub-ecs-service --force-new-deployment

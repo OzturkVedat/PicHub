@@ -71,5 +71,17 @@ resource "aws_ecs_service" "pichub_service" {
   desired_count           = 1
   launch_type             = "EC2"
   enable_ecs_managed_tags = false
+
+  force_new_deployment               = true
+  deployment_minimum_healthy_percent = 0
+  deployment_maximum_percent         = 100
+
+  deployment_controller {
+    type = "ECS"
+  }
+  deployment_circuit_breaker { # rollback to the last working version if new task fails
+    enable   = true
+    rollback = true
+  }
 }
 
