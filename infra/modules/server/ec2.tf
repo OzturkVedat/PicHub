@@ -52,6 +52,10 @@ resource "aws_autoscaling_group" "ecs_asg" {
   }
 }
 
+output "ecs_asg_name" {
+  value = aws_autoscaling_group.ecs_asg.name
+}
+
 resource "aws_security_group" "ec2_sg" {
   name        = "ec2_security_group"
   description = "For allowing traffic."

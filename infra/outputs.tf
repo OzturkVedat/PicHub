@@ -1,7 +1,7 @@
 data "aws_instances" "ecs_nodes" {
   filter {
     name   = "tag:aws:autoscaling:groupName"
-    values = [aws_autoscaling_group.ecs_asg.name]
+    values = [module.server.ecs_asg_name]
   }
 
   filter {
