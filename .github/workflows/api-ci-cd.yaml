@@ -1,6 +1,8 @@
 name: Build and Push API Image
 
 on:
+  workflow_dispatch:
+
   push:
     branches:
       - master
@@ -9,22 +11,24 @@ on:
 
 jobs:
   lint:
-    name: Lint Code Base
+    name: Analyze .NET Code
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
-      - name: Run Super Linter
-        uses: super-linter/super-linter@v7.3.0
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          VALIDATE_CSHARP: true
-          VALIDATE_DOCKERFILE: true
-          DEFAULT_BRANCH: master
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.0.x"
+          cache: true
+
+      - name: Restore Dependencies
+        run: dotnet restore PicHub.API/PicHub.API.csproj
+
+      - name: Run .NET Code Analysis
+        run: dotnet build --no-restore --configuration Release
 
   build_and_push:
     runs-on: ubuntu-latest
