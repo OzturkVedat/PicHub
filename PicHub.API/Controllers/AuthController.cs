@@ -15,6 +15,11 @@ namespace PicHub.API.Controllers
             _cognitoService = cognitoService;
         }
 
+        [HttpGet("health")]
+        public async Task<IActionResult> HealthCheck(){
+            return Ok();
+        }
+
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterRequest request)
         {
