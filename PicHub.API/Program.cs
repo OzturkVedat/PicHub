@@ -1,8 +1,5 @@
 using Amazon.CognitoIdentityProvider;
-using Amazon.Runtime;
 using Amazon.S3;
-using Amazon.SimpleSystemsManagement;
-using Amazon.SimpleSystemsManagement.Model;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -10,14 +7,11 @@ using PicHub.API.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var userPoolClientId     = Environment.GetEnvironmentVariable("USER_POOL_CLIENT_ID");
-var userPoolClientSecret = Environment.GetEnvironmentVariable("USER_POOL_CLIENT_SECRET");
-var jwtAuthority         = Environment.GetEnvironmentVariable("JWT_AUTHORITY");
+builder.Configuration.AddEnvironmentVariables();
 
-
-var response = await ssmClient.GetParametersAsync(request);
-var configValues = response.Parameters.ToDictionary(p => p.Name, p => p.Value);
-builder.Configuration.AddInMemoryCollection(configValues);
+var userPoolClientId = builder.Configuration["USER_POOL_CLIENT_ID"];
+var userPoolClientSecret = builder.Configuration["USER_POOL_CLIENT_SECRET"];
+var jwtAuthority = builder.Configuration["JWT_AUTHORITY"];
 
 
 builder.Services.AddScoped<IAmazonCognitoIdentityProvider>(_ =>
