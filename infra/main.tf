@@ -15,8 +15,8 @@ terraform {
 }
 
 provider "aws" {
-  profile = "default"
-  region  = "eu-north-1"
+  #profile = "default"
+  region = "eu-north-1"
 }
 
 module "network" {
