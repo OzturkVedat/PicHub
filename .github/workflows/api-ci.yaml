@@ -29,7 +29,7 @@ jobs:
       - name: Run .NET Code Analysis
         run: dotnet build PicHub.API/PicHub.API.csproj --no-restore --configuration Release
 
-  build_and_deploy:
+  build_and_push:
     runs-on: ubuntu-latest
     name: Build and Push Docker Image
     needs: lint
@@ -55,7 +55,3 @@ jobs:
           file: ./PicHub.API/Dockerfile
           push: true
           tags: ${{secrets.AWS_ACCOUNT_ID}}.dkr.ecr.${{secrets.AWS_REGION}}.amazonaws.com/pichub/api:latest
-
-      - name: Force new ECS deployment
-        run: |
-          aws ecs update-service --cluster pichub-ecs-cluster --service pichub-ecs-service --force-new-deployment --region ${{secrets.AWS_REGION}}
