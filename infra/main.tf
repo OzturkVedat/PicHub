@@ -25,8 +25,8 @@ module "network" {
   subnet_az = var.subnet_az
 }
 
-module "ecs" {
-  source = "./modules/ecs"
+module "server" {
+  source = "./modules/server"
 
   aws_region       = var.aws_region
   vpc_id           = module.network.vpc_id
