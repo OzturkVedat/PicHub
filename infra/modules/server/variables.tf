@@ -2,9 +2,7 @@ variable "aws_region" {}
 variable "vpc_id" {}
 variable "public_subnet_id" {}
 
-variable "api_image_uri" {
-  default = "962546904675.dkr.ecr.eu-north-1.amazonaws.com/pichub/api:latest"
-}
+variable "api_image_uri" {}
 
 variable "param_resource" {
   default = "arn:aws:ssm:eu-north-1:962546904675:parameter/pichub"

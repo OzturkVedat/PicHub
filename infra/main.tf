@@ -31,4 +31,6 @@ module "server" {
   aws_region       = var.aws_region
   vpc_id           = module.network.vpc_id
   public_subnet_id = module.network.public_subnet_id
+
+  api_image_uri = local.api_img_uri
 }

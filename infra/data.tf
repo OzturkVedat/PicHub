@@ -1,3 +1,17 @@
+data "aws_ecr_repository" "pichub" {
+  name = "pichub/api"
+}
+
+data "aws_ecr_image" "api_img" {
+  repository_name = data.aws_ecr_repository.pichub.name
+  image_tag       = "latest"
+}
+
+locals {
+  api_img_uri = "${data.aws_ecr_repository.pichub.repository_url}@${data.aws_ecr_image.api_img.image_digest}"
+}
+
+
 data "aws_instances" "ecs_nodes" {
   filter {
     name   = "tag:aws:autoscaling:groupName"
