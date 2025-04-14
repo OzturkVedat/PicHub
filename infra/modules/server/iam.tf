@@ -36,9 +36,34 @@ resource "aws_iam_role" "ecs_exe_role" {
   })
 }
 
+resource "aws_iam_policy" "ecs_exe_ssm_policy" {
+  name        = "ecs-execution-ssm-policy"
+  description = "Allow ECS execution role to get SSM parameters"
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "ssm:GetParameter",
+          "ssm:GetParameters",
+          "ssm:GetParametersByPath"
+        ]
+        Resource = "${var.param_resource}/*"
+      }
+    ]
+  })
+}
+
 resource "aws_iam_role_policy_attachment" "ecs_exe_policy_attach" {
   role       = aws_iam_role.ecs_exe_role.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
+}
+
+resource "aws_iam_role_policy_attachment" "ecs_exe_ssm_policy_attach" {
+  role       = aws_iam_role.ecs_exe_role.name
+  policy_arn = aws_iam_policy.ecs_exe_ssm_policy.arn
 }
 
 resource "aws_iam_role" "ecs_task_role" {
@@ -61,15 +86,6 @@ resource "aws_iam_policy" "ecs_task_policy" {
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
-      {
-        Effect = "Allow"
-        Action = [
-          "ssm:GetParameter",
-          "ssm:GetParameters",
-          "ssm:GetParametersByPath"
-        ]
-        Resource = "${var.param_resource}/*"
-      },
       {
         Effect = "Allow"
         Action = [
