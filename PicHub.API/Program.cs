@@ -80,7 +80,7 @@ var app = builder.Build();
 app.UseSwagger();
 app.UseSwaggerUI();
 
-app.UseHttpsRedirection();
+// app.UseHttpsRedirection();  // commented out for development purposes
 
 app.UseAuthentication();
 app.UseAuthorization();

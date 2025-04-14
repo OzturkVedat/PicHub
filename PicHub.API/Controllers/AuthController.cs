@@ -16,10 +16,7 @@ namespace PicHub.API.Controllers
         }
 
         [HttpGet("health")]
-        public async Task<IActionResult> HealthCheck()
-        {
-            return Ok();
-        }
+        public IActionResult HealthCheck() => Ok();
 
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterRequest request)
