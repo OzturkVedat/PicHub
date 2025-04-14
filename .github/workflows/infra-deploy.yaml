@@ -1,6 +1,8 @@
 name: Terraform Infra Deployment
 
 on:
+  workflow_dispatch:
+
   workflow_run:
     workflows: ["Build and Deploy API"]
     types:
