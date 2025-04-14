@@ -18,7 +18,6 @@ namespace PicHub.API.Controllers
         [HttpGet("health")]
         public async Task<IActionResult> HealthCheck()
         {
-            // trigger
             return Ok();
         }
 
