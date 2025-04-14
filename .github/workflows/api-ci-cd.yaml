@@ -64,4 +64,4 @@ jobs:
     steps:
       - name: Force new ECS deployment
         run: |
-          aws ecs update-service --cluster pichub-ecs-cluster --service pichub-ecs-service --force-new-deployment
+          aws ecs update-service --cluster pichub-ecs-cluster --service pichub-ecs-service --force-new-deployment --region ${{secrets.AWS_REGION}}
