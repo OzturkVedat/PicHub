@@ -23,10 +23,12 @@ namespace PicHub.API.Services
              S3Service s3Service, ICacheService cacheService)
         {
             _cognitoClient = cognitoClient;
-            _clientId = config["/pichub/user_pool_client_id"].ToString();
-            _clientSecret = config["/pichub/user_pool_client_secret"].ToString();
+            _clientId = config["USER_POOL_CLIENT_ID"] ?? throw new ArgumentNullException("USER_POOL_CLIENT_ID");
+        _clientSecret = config["USER_POOL_CLIENT_SECRET"] ?? throw new ArgumentNullException("USER_POOL_CLIENT_SECRET");
 
-            _s3Region = Amazon.RegionEndpoint.GetBySystemName(config["/pichub/aws_region"]);
+        var regionName = config["AWS_REGION"] ?? "eu-north-1";
+                _s3Region = Amazon.RegionEndpoint.GetBySystemName(regionName);
+
             _s3Service = s3Service;
             _cacheService = cacheService;
         }

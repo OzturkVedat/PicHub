@@ -10,18 +10,10 @@ using PicHub.API.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var ssmClient = new AmazonSimpleSystemsManagementClient(Amazon.RegionEndpoint.EUNorth1);
+var userPoolClientId     = Environment.GetEnvironmentVariable("USER_POOL_CLIENT_ID");
+var userPoolClientSecret = Environment.GetEnvironmentVariable("USER_POOL_CLIENT_SECRET");
+var jwtAuthority         = Environment.GetEnvironmentVariable("JWT_AUTHORITY");
 
-var request = new GetParametersRequest
-{
-    Names = new List<string>
-    {
-        "/pichub/user_pool_client_id",
-        "/pichub/user_pool_client_secret",
-        "/pichub/jwt_authority",
-    },
-    WithDecryption = true
-};
 
 var response = await ssmClient.GetParametersAsync(request);
 var configValues = response.Parameters.ToDictionary(p => p.Name, p => p.Value);
@@ -37,10 +29,10 @@ builder.Services.AddScoped<IAmazonS3>(_ =>
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, o =>
     {
-        o.Authority = builder.Configuration["/pichub/jwt_authority"];
+        o.Authority = jwtAuthority;
         o.TokenValidationParameters = new TokenValidationParameters
         {
-            ValidAudience = builder.Configuration["/pichub/user_pool_client_id"],
+            ValidAudience = userPoolClientId,
             ValidateAudience = true,
             ValidateLifetime = true,
             ValidateIssuerSigningKey = true,

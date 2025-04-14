@@ -43,8 +43,3 @@ jobs:
 
       - name: Terraform Apply
         run: terraform apply -auto-approve
-
-      - name: Output Swagger UI URL
-        run: |
-          echo "API doc should be available at:"
-          terraform output -raw swagger_ui_url
