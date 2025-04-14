@@ -19,7 +19,6 @@ resource "aws_launch_template" "ecs_launch_template" {
   name                   = "pichub-ec2-launch-template"
   image_id               = data.aws_ami.ecs_optimized.id
   instance_type          = "t3.micro"
-  key_name               = data.aws_key_pair.ec2_ssh_pair.key_name
   vpc_security_group_ids = [aws_security_group.ec2_sg.id]
 
   user_data = base64encode(<<EOF

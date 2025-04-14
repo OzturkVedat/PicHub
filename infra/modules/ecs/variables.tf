@@ -6,10 +6,6 @@ variable "api_image_uri" {
   default = "962546904675.dkr.ecr.eu-north-1.amazonaws.com/pichub/api:latest"
 }
 
-variable "ec2_ami_id" {
-  default = "ami-07f6330cb37447858"
-}
-
 variable "param_resource" {
   default = "arn:aws:ssm:eu-north-1:962546904675:parameter/pichub"
 }
