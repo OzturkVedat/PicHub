@@ -68,13 +68,32 @@ resource "aws_iam_policy" "ecs_task_policy" {
           "ssm:GetParameters",
           "ssm:GetParametersByPath"
         ]
-        Resource = var.param_resource
+        Resource = "${var.param_resource}/*"
       },
       {
         Effect = "Allow"
         Action = [
           "logs:CreateLogStream",
           "logs:PutLogEvents"
+        ]
+        Resource = "*"
+      },
+      {
+        Effect = "Allow"
+        Action = [
+          "cognito-idp:AdminInitiateAuth",
+          "cognito-idp:AdminGetUser",
+          "cognito-idp:ListUsers"
+        ]
+        Resource = "${var.user_pool_arn}"
+      },
+      {
+        Effect = "Allow"
+        Action = [
+          "s3:PutObject",
+          "s3:GetObject",
+          "s3:DeleteObject",
+          "s3:ListBucket"
         ]
         Resource = "*"
       }

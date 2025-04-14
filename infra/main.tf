@@ -1,32 +1,34 @@
+terraform {
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 5.0"
+    }
+  }
+  backend "s3" {
+    bucket       = "tfstate-bucket-pichub"
+    key          = "terraform.tfstate"
+    region       = "eu-north-1"
+    encrypt      = true
+    use_lockfile = true # prevent concurrent ops on statefile
+  }
+}
+
 provider "aws" {
   profile = "default"
   region  = "eu-north-1"
 }
 
 module "network" {
-  source         = "./network"
-  vpc_cidr       = var.vpc_cidr
-  allowed_ssh_ip = var.allowed_ssh_ip
+  source = "./modules/network"
 
-  subnet_cidr = var.subnet_cidr
-  subnet_az   = var.subnet_az
+  subnet_az = var.subnet_az
 }
 
 module "ecs" {
-  source                  = "./ecs"
-  aws_access_key          = var.aws_access_key
-  aws_secret_key          = var.aws_secret_key
-  aws_region              = var.aws_region
-  api_image_uri           = var.api_image_uri
-  ec2_ami_id              = var.ec2_ami_id
-  param_resource          = var.param_resource
-  user_pool_client_id     = var.user_pool_client_id
-  user_pool_client_secret = var.user_pool_client_secret
-  jwt_authority           = var.jwt_authority
+  source = "./modules/ecs"
 
-  ssh_key_name   = var.ssh_key_name
-  allowed_ssh_ip = var.allowed_ssh_ip
-
+  aws_region       = var.aws_region
   vpc_id           = module.network.vpc_id
   public_subnet_id = module.network.public_subnet_id
 }

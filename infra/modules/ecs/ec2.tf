@@ -1,7 +1,3 @@
-data "aws_key_pair" "ec2_ssh_pair" {
-  key_name = var.ssh_key_name # fetch from aws
-}
-
 data "aws_ssm_parameter" "ecs_ami" {
   name = "/aws/service/ecs/optimized-ami/amazon-linux-2/recommended/image_id"
 }
@@ -74,20 +70,6 @@ resource "aws_security_group" "ec2_sg" {
     to_port     = 443
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  ingress {
-    from_port   = 8080
-    to_port     = 8081
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"] # need to adjust to allow internal communication only
-  }
-
-  ingress {
-    from_port   = 22
-    to_port     = 22
-    protocol    = "tcp"
-    cidr_blocks = [var.allowed_ssh_ip]
   }
 
   egress {

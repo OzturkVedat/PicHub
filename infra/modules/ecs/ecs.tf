@@ -27,15 +27,31 @@ resource "aws_ecs_task_definition" "pichub_task" {
     portMappings = [
       {
         containerPort = 8080,
-        hostPort      = 8080,
+        hostPort      = 80,
         protocol      = "tcp"
       },
       {
         containerPort = 8081,
-        hostPort      = 8081,
+        hostPort      = 443,
         protocol      = "tcp"
       }
     ]
+
+    secrets = [
+      {
+        name      = "USER_POOL_CLIENT_ID"
+        valueFrom = "${var.param_resource}/user_pool_client_id"
+      },
+      {
+        name      = "USER_POOL_CLIENT_SECRET"
+        valueFrom = "${var.param_resource}/user_pool_client_secret"
+      },
+      {
+        name      = "JWT_AUTHORITY"
+        valueFrom = "${var.param_resource}/jwt_authority"
+      }
+    ]
+
     logConfiguration = {
       logDriver = "awslogs"
       options = {

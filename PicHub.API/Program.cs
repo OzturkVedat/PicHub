@@ -16,9 +16,6 @@ var request = new GetParametersRequest
 {
     Names = new List<string>
     {
-        "/pichub/aws_access_key",
-        "/pichub/aws_secret_key",
-        "/pichub/aws_region",
         "/pichub/user_pool_client_id",
         "/pichub/user_pool_client_secret",
         "/pichub/jwt_authority",
@@ -31,22 +28,11 @@ var configValues = response.Parameters.ToDictionary(p => p.Name, p => p.Value);
 builder.Configuration.AddInMemoryCollection(configValues);
 
 
-builder.Services.AddScoped<IAmazonCognitoIdentityProvider>(sp =>
-{
-    var credentials = new BasicAWSCredentials(
-        builder.Configuration["/pichub/aws_access_key"],
-        builder.Configuration["/pichub/aws_secret_key"]
-    );
-    return new AmazonCognitoIdentityProviderClient(credentials, Amazon.RegionEndpoint.GetBySystemName(builder.Configuration["/pichub/aws_region"]));
-});
+builder.Services.AddScoped<IAmazonCognitoIdentityProvider>(_ =>
+    new AmazonCognitoIdentityProviderClient(Amazon.RegionEndpoint.EUNorth1));
 
-builder.Services.AddScoped<IAmazonS3>(sp =>
-{
-    var credentials = new BasicAWSCredentials(
-        builder.Configuration["/pichub/aws_access_key"],
-        builder.Configuration["/pichub/aws_secret_key"]);
-    return new AmazonS3Client(credentials, Amazon.RegionEndpoint.GetBySystemName(builder.Configuration["/pichub/aws_region"]));
-});
+builder.Services.AddScoped<IAmazonS3>(_ =>
+    new AmazonS3Client(Amazon.RegionEndpoint.EUNorth1));
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, o =>
