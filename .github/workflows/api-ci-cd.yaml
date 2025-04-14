@@ -8,24 +8,45 @@ on:
       - "PicHub.API/**" # trigger when API code changes
 
 jobs:
-  deploy:
+  lint:
+    name: Lint Code Base
     runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Run Super Linter
+        uses: super-linter/super-linter@v7.3.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VALIDATE_CSHARP: true
+          VALIDATE_DOCKERFILE: true
+          DEFAULT_BRANCH: master
+
+  build_and_push:
+    runs-on: ubuntu-latest
+    name: Build and Push Docker Image
+    needs: lint
+
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
 
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v2
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Login to AWS ECR
-        uses: aws-actions/amazon-ecr-login@v1
+        uses: aws-actions/amazon-ecr-login@v2
 
       - name: Push Docker image
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v6
         with:
           context: ./PicHub.API
           file: ./PicHub.API/Dockerfile
