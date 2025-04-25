@@ -10,8 +10,8 @@ WORKDIR /src
 
 COPY ["PicHub.API.csproj", "./"]
 RUN dotnet restore "./PicHub.API.csproj"
-COPY . .
 
+COPY . .
 RUN dotnet build "./PicHub.API.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 FROM build AS publish
