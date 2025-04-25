@@ -49,27 +49,6 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
-      - name: Delete the old image from repo
-        run: |
-          REPO_NAME=pichub/api
-          REGION=${{ secrets.AWS_REGION }}
-          EXISTING_DIGEST=$(aws ecr list-images \
-            --repository-name $REPO_NAME \
-            --filter tagStatus=TAGGED \
-            --query "imageIds[?imageTag=='latest'].imageDigest" \
-            --output text \
-            --region $REGION)
-
-          if [ -n "$EXISTING_DIGEST" ]; then
-            echo "Deleting old image tagged 'latest': $EXISTING_DIGEST"
-            aws ecr batch-delete-image \
-              --repository-name $REPO_NAME \
-              --image-ids imageDigest=$EXISTING_DIGEST \
-              --region $REGION
-          else
-            echo "No existing image with tag 'latest' found."
-          fi
-
       - name: Login to AWS ECR
         uses: aws-actions/amazon-ecr-login@v2
 
@@ -94,3 +73,27 @@ jobs:
           cache-from: type=local,src=.buildx-cache
           cache-to: type=local,dest=.buildx-cache
           platforms: linux/amd64
+
+      - name: Delete untagged images from repo
+        run: |
+          REPO_NAME=pichub/api
+          REGION=${{ secrets.AWS_REGION }}
+
+          UNTAGGED_DIGESTS=$(aws ecr list-images \
+            --repository-name $REPO_NAME \
+            --filter tagStatus=UNTAGGED \
+            --query 'imageIds[*].imageDigest' \
+            --output text \
+            --region $REGION)
+
+          if [ -n "$UNTAGGED_DIGESTS" ]; then
+            for digest in $UNTAGGED_DIGESTS; do
+              echo "Deleting untagged image: $digest"
+              aws ecr batch-delete-image \
+                --repository-name $REPO_NAME \
+                --image-ids imageDigest=$digest \
+                --region $REGION
+            done
+          else
+            echo "No untagged images to delete."
+          fi
