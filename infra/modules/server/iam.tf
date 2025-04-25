@@ -97,7 +97,10 @@ resource "aws_iam_policy" "ecs_task_policy" {
       {
         Effect = "Allow"
         Action = [
+          "cognito-idp:SignUp",
+          "cognito-idp:AdminCreateUser",
           "cognito-idp:AdminInitiateAuth",
+          "cognito-idp:ConfirmSignUp",
           "cognito-idp:AdminGetUser",
           "cognito-idp:ListUsers"
         ]

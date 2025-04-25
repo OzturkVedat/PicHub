@@ -1,4 +1,5 @@
 using Amazon.CognitoIdentityProvider;
+using Amazon.Runtime;
 using Amazon.S3;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
@@ -15,10 +16,14 @@ var jwtAuthority = builder.Configuration["JWT_AUTHORITY"];
 
 
 builder.Services.AddScoped<IAmazonCognitoIdentityProvider>(_ =>
-    new AmazonCognitoIdentityProviderClient(Amazon.RegionEndpoint.EUNorth1));
+    new AmazonCognitoIdentityProviderClient(
+        credentials: FallbackCredentialsFactory.GetCredentials(),
+        region:Amazon.RegionEndpoint.EUNorth1));
 
 builder.Services.AddScoped<IAmazonS3>(_ =>
-    new AmazonS3Client(Amazon.RegionEndpoint.EUNorth1));
+    new AmazonS3Client(
+        credentials: FallbackCredentialsFactory.GetCredentials(),
+        region: Amazon.RegionEndpoint.EUNorth1));
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, o =>
