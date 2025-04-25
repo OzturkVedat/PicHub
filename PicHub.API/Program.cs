@@ -32,7 +32,6 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateIssuerSigningKey = true,
             RoleClaimType = "cognito:groups"    // check the role claim
         };
-        // o.MapInboundClaims = false;
     });
 
 builder.Services.AddAuthorization();
