@@ -12,23 +12,24 @@ namespace PicHub.API.Services
     public class CognitoService
     {
         private readonly IAmazonCognitoIdentityProvider _cognitoClient;
+        private readonly IAmazonS3 _s3Client;
         private readonly string _clientId;
         private readonly string _clientSecret;
 
-        private readonly Amazon.RegionEndpoint _s3Region;
         private readonly S3Service _s3Service;
         private readonly ICacheService _cacheService;
 
-        public CognitoService(IAmazonCognitoIdentityProvider cognitoClient, IConfiguration config,
-             S3Service s3Service, ICacheService cacheService)
+        public CognitoService(
+            IAmazonCognitoIdentityProvider cognitoClient,
+            IAmazonS3 s3Client,
+            IConfiguration config,
+             S3Service s3Service,
+             ICacheService cacheService)
         {
             _cognitoClient = cognitoClient;
             _clientId = config["USER_POOL_CLIENT_ID"] ?? throw new ArgumentNullException("USER_POOL_CLIENT_ID");
-        _clientSecret = config["USER_POOL_CLIENT_SECRET"] ?? throw new ArgumentNullException("USER_POOL_CLIENT_SECRET");
-
-        var regionName = config["AWS_REGION"] ?? "eu-north-1";
-                _s3Region = Amazon.RegionEndpoint.GetBySystemName(regionName);
-
+            _clientSecret = config["USER_POOL_CLIENT_SECRET"] ?? throw new ArgumentNullException("USER_POOL_CLIENT_SECRET");
+            _s3Client = s3Client;
             _s3Service = s3Service;
             _cacheService = cacheService;
         }
@@ -37,13 +38,12 @@ namespace PicHub.API.Services
         {
             try
             {
-                using var s3Client = new AmazonS3Client(_s3Region);
                 string bucketName = GenerateBucketName();
-                bool bucketExists = await AmazonS3Util.DoesS3BucketExistV2Async(s3Client, bucketName);
+                bool bucketExists = await AmazonS3Util.DoesS3BucketExistV2Async(_s3Client, bucketName);
                 while (bucketExists)
                 {
                     bucketName = GenerateBucketName();
-                    bucketExists = await AmazonS3Util.DoesS3BucketExistV2Async(s3Client, bucketName);
+                    bucketExists = await AmazonS3Util.DoesS3BucketExistV2Async(_s3Client, bucketName);
                 }
                 await _cacheService.SetBucketName(email, bucketName);
                 var request = new SignUpRequest

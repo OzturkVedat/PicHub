@@ -14,7 +14,6 @@ var userPoolClientId = builder.Configuration["USER_POOL_CLIENT_ID"];
 var userPoolClientSecret = builder.Configuration["USER_POOL_CLIENT_SECRET"];
 var jwtAuthority = builder.Configuration["JWT_AUTHORITY"];
 
-
 builder.Services.AddScoped<IAmazonCognitoIdentityProvider>(_ =>
     new AmazonCognitoIdentityProviderClient(
         credentials: FallbackCredentialsFactory.GetCredentials(),
