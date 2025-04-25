@@ -34,7 +34,7 @@ module "server" {
   api_image_uri = local.api_img_uri
 
   user_pool_arn           = data.aws_ssm_parameter.user_pool_arn.value
-  user_pool_client_id     = data.aws_ssm_parameter.user_pool_client_id
-  user_pool_client_secret = data.aws_ssm_parameter.user_pool_client_secret
-  jwt_authority           = data.aws_ssm_parameter.jwt_authority
+  user_pool_client_id     = data.aws_ssm_parameter.user_pool_client_id.value
+  user_pool_client_secret = data.aws_ssm_parameter.user_pool_client_secret.value
+  jwt_authority           = data.aws_ssm_parameter.jwt_authority.value
 }
