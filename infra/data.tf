@@ -1,3 +1,11 @@
+data "aws_ssm_parameter" "param_resource" {
+  name = "/ivote/param_resource"
+}
+
+data "aws_ssm_parameter" "user_pool_arn" {
+  name = "/ivote/user_pool_arn"
+}
+
 data "aws_ecr_repository" "pichub" {
   name = "pichub/api"
 }
@@ -10,7 +18,6 @@ data "aws_ecr_image" "api_img" {
 locals {
   api_img_uri = "${data.aws_ecr_repository.pichub.repository_url}@${data.aws_ecr_image.api_img.image_digest}"
 }
-
 
 data "aws_instances" "ecs_nodes" {
   filter {
