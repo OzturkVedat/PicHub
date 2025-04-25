@@ -40,15 +40,15 @@ resource "aws_ecs_task_definition" "pichub_task" {
     secrets = [
       {
         name      = "USER_POOL_CLIENT_ID"
-        valueFrom = "${var.param_resource}/user_pool_client_id"
+        valueFrom = "${var.user_pool_client_id}"
       },
       {
         name      = "USER_POOL_CLIENT_SECRET"
-        valueFrom = "${var.param_resource}/user_pool_client_secret"
+        valueFrom = "${var.user_pool_client_secret}"
       },
       {
         name      = "JWT_AUTHORITY"
-        valueFrom = "${var.param_resource}/jwt_authority"
+        valueFrom = "${var.jwt_authority}"
       }
     ]
 

@@ -50,7 +50,7 @@ resource "aws_iam_policy" "ecs_exe_ssm_policy" {
           "ssm:GetParameters",
           "ssm:GetParametersByPath"
         ]
-        Resource = "${var.param_resource}/*"
+        Resource = "*"
       }
     ]
   })

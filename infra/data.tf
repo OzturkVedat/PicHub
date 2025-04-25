@@ -1,9 +1,17 @@
-data "aws_ssm_parameter" "param_resource" {
-  name = "/ivote/param_resource"
-}
-
 data "aws_ssm_parameter" "user_pool_arn" {
   name = "/ivote/user_pool_arn"
+}
+
+data "aws_ssm_parameter" "user_pool_client_id" {
+  name = "/ivote/user_pool_client_id"
+}
+
+data "aws_ssm_parameter" "user_pool_client_secret" {
+  name = "/ivote/user_pool_client_secret"
+}
+
+data "aws_ssm_parameter" "jwt_authority" {
+  name = "/ivote/jwt_authority"
 }
 
 data "aws_ecr_repository" "pichub" {

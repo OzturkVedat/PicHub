@@ -31,7 +31,10 @@ module "server" {
   vpc_id           = module.network.vpc_id
   public_subnet_id = module.network.public_subnet_id
 
-  api_image_uri  = local.api_img_uri
-  param_resource = data.aws_ssm_parameter.param_resource.value
-  user_pool_arn  = data.aws_ssm_parameter.user_pool_arn.value
+  api_image_uri = local.api_img_uri
+
+  user_pool_arn           = data.aws_ssm_parameter.user_pool_arn.value
+  user_pool_client_id     = data.aws_ssm_parameter.user_pool_client_id
+  user_pool_client_secret = data.aws_ssm_parameter.user_pool_client_secret
+  jwt_authority           = data.aws_ssm_parameter.jwt_authority
 }
