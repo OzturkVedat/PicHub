@@ -14,11 +14,11 @@ var userPoolClientId = builder.Configuration["USER_POOL_CLIENT_ID"];
 var userPoolClientSecret = builder.Configuration["USER_POOL_CLIENT_SECRET"];
 var jwtAuthority = builder.Configuration["JWT_AUTHORITY"];
 
-builder.Services.AddScoped<IAmazonCognitoIdentityProvider>(_ =>
-    new AmazonCognitoIdentityProviderClient(region:Amazon.RegionEndpoint.EUNorth1));
+builder.Services.AddSingleton<IAmazonS3>(
+    _ => new AmazonS3Client(region: Amazon.RegionEndpoint.EUNorth1));
 
-builder.Services.AddScoped<IAmazonS3>(_ =>
-    new AmazonS3Client(region: Amazon.RegionEndpoint.EUNorth1));
+builder.Services.AddSingleton<IAmazonCognitoIdentityProvider>(
+    _ => new AmazonCognitoIdentityProviderClient(region: Amazon.RegionEndpoint.EUNorth1));
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, o =>
