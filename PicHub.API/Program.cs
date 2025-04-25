@@ -15,14 +15,10 @@ var userPoolClientSecret = builder.Configuration["USER_POOL_CLIENT_SECRET"];
 var jwtAuthority = builder.Configuration["JWT_AUTHORITY"];
 
 builder.Services.AddScoped<IAmazonCognitoIdentityProvider>(_ =>
-    new AmazonCognitoIdentityProviderClient(
-        credentials: FallbackCredentialsFactory.GetCredentials(),
-        region:Amazon.RegionEndpoint.EUNorth1));
+    new AmazonCognitoIdentityProviderClient(region:Amazon.RegionEndpoint.EUNorth1));
 
 builder.Services.AddScoped<IAmazonS3>(_ =>
-    new AmazonS3Client(
-        credentials: FallbackCredentialsFactory.GetCredentials(),
-        region: Amazon.RegionEndpoint.EUNorth1));
+    new AmazonS3Client(region: Amazon.RegionEndpoint.EUNorth1));
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, o =>
