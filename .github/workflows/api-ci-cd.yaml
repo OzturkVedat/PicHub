@@ -1,4 +1,4 @@
-name: Build and Push API Image
+name: Build and Deploy API Image
 
 on:
   workflow_dispatch:
@@ -10,7 +10,7 @@ on:
       - "PicHub.API/**" # trigger when API code changes
 
 concurrency:
-  group: ci-${{ github.ref }}
+  group: pichub-ci-cd${{ github.ref }}
   cancel-in-progress: false
 
 jobs:
@@ -97,3 +97,27 @@ jobs:
           else
             echo "No untagged images to delete."
           fi
+
+  deploy:
+    runs-on: ubuntu-latest
+    name: Deploy to ECS
+    needs: build_and_push
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Configure AWS cred
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Update ECS Service
+        run: |
+          aws ecs update-service \
+            --cluster pichub-ecs-cluster \
+            --service pichub-ecs-service \
+            --force-new-deployment \
+            --region ${{secrets.AWS_REGION}}
