@@ -40,22 +40,22 @@ resource "aws_ecs_task_definition" "pichub_task" {
     secrets = [
       {
         name      = "USER_POOL_CLIENT_ID"
-        valueFrom = var.user_pool_client_id
+        valueFrom = tostring(var.user_pool_client_id)
       },
       {
         name      = "USER_POOL_CLIENT_SECRET"
-        valueFrom = var.user_pool_client_secret
+        valueFrom = tostring(var.user_pool_client_secret)
       },
       {
         name      = "JWT_AUTHORITY"
-        valueFrom = var.jwt_authority
+        valueFrom = tostring(var.jwt_authority)
       }
     ]
 
     logConfiguration = {
       logDriver = "awslogs"
       options = {
-        "awslogs-group"         = "${aws_cloudwatch_log_group.pichub_service_logs.name}"
+        "awslogs-group"         = aws_cloudwatch_log_group.pichub_service_logs.name
         "awslogs-region"        = "eu-north-1"
         "awslogs-stream-prefix" = "ecs"
       }
