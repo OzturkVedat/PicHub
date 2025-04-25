@@ -9,6 +9,10 @@ on:
     paths:
       - "PicHub.API/**" # trigger when API code changes
 
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: false
+
 jobs:
   lint:
     name: Analyze .NET Code
