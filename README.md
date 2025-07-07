@@ -14,3 +14,4 @@ This is a monolithic API for storing and managing images. It is built with **ASP
 
 ---
 
+![Swagger UI](docs/swag.png)
